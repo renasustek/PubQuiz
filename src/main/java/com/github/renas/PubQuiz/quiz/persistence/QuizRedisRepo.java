@@ -17,6 +17,8 @@ public class QuizRedisRepo {
     }
 
     public void loadQuestions(String gamePin, List<Question> questions){
-        redisTemplate.opsForValue().set("game:"+gamePin+":questions", questions);
+        questions.forEach(question -> {
+            redisTemplate.opsForList().rightPush("game:"+gamePin+":questions",question);
+        });
     }
 }

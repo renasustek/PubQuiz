@@ -43,4 +43,8 @@ public class GameSessionService {
             return null;
         }
     }
+
+    public void startGame(String pin){
+        gameSessionRedisRepo.startGame(pin);
+    }
 }
