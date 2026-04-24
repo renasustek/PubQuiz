@@ -1,6 +1,6 @@
 package com.github.renas.PubQuiz.gameSession.service;
 
-import com.github.renas.PubQuiz.gameSession.persistence.GameSessionPersistence;
+import com.github.renas.PubQuiz.gameSession.persistence.GameSessionRedisRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -8,15 +8,15 @@ import java.util.Random;
 @Service
 public class GameSessionService {
 
-    private final GameSessionPersistence gameSessionPersistence;
+    private final GameSessionRedisRepo gameSessionRedisRepo;
 
-    public GameSessionService(GameSessionPersistence gameSessionPersistence) {
-        this.gameSessionPersistence = gameSessionPersistence;
+    public GameSessionService(GameSessionRedisRepo gameSessionRedisRepo) {
+        this.gameSessionRedisRepo = gameSessionRedisRepo;
     }
     private String generatePin(){
         String pin = String.valueOf(new Random().nextInt(9000) + 1000);
 
-        while (gameSessionPersistence.pinExists(pin)){
+        while (gameSessionRedisRepo.pinExists(pin)){
             pin = String.valueOf(new Random().nextInt(9000) + 1000);
         }
 
@@ -25,7 +25,7 @@ public class GameSessionService {
 
     public String createGame(String hostName){
         String pin = generatePin();
-        gameSessionPersistence.createGame(pin, hostName);
+        gameSessionRedisRepo.createGame(pin, hostName);
         return pin;
     }
 }

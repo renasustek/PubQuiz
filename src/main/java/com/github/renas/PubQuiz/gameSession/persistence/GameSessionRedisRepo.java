@@ -8,20 +8,17 @@ import org.springframework.stereotype.Repository;
 import java.util.concurrent.TimeUnit;
 
 @Repository
-public class GameSessionPersistence {
+public class GameSessionRedisRepo {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public GameSessionPersistence(RedisTemplate<String, Object> redisTemplate) {
+    public GameSessionRedisRepo(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     public boolean pinExists(String pin){
-        if (redisTemplate.opsForValue().get(pin) == null){
-            return false;
-        } else {
-            return true;
-        }
+        return redisTemplate.opsForValue().get(pin) != null;
+
     }
 
     public void createGame(String pin, String hostName) {
