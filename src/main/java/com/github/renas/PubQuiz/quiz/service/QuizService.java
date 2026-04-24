@@ -2,11 +2,13 @@ package com.github.renas.PubQuiz.quiz.service;
 
 import com.github.renas.PubQuiz.gameSession.persistence.GameSessionRedisRepo;
 import com.github.renas.PubQuiz.quiz.Question;
+import com.github.renas.PubQuiz.quiz.Results;
 import com.github.renas.PubQuiz.quiz.payloads.AnswerQuestionRequest;
 import com.github.renas.PubQuiz.quiz.payloads.AnswerQuestionResponse;
 import com.github.renas.PubQuiz.quiz.payloads.QuestionResponse;
 import com.github.renas.PubQuiz.quiz.persistence.QuizRedisRepo;
 import com.github.renas.PubQuiz.quiz.persistence.QuizRepo;
+import com.github.renas.PubQuiz.user.service.UserService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,11 +20,12 @@ public class QuizService {
     private final QuizRedisRepo quizRedisRepo;
     private final QuizRepo quizRepo;
     private final GameSessionRedisRepo gameSessionRedisRepo;
-
-    public QuizService(QuizRedisRepo quizRedisRepo, QuizRepo quizRepo, GameSessionRedisRepo gameSessionRedisRepo) {
+    private final UserService userService;
+    public QuizService(QuizRedisRepo quizRedisRepo, QuizRepo quizRepo, GameSessionRedisRepo gameSessionRedisRepo, UserService userService) {
         this.quizRedisRepo = quizRedisRepo;
         this.quizRepo = quizRepo;
         this.gameSessionRedisRepo = gameSessionRedisRepo;
+        this.userService = userService;
     }
 
     public void loadQuiz(String gamePin) {
@@ -51,9 +54,11 @@ public class QuizService {
         String pin = req.pin();
         String correctAnswer = quizRedisRepo.getQuestion(pin, gameSessionRedisRepo.getGameState(pin).currentQuestionIndex()).correctAnswer();
         if (Objects.equals(req.answer(), correctAnswer)) {
-            return new AnswerQuestionResponse("winner");
+            userService.appendScore(req, Results.WINNER.getScore());
+            return new AnswerQuestionResponse(Results.WINNER);
         } else {
-            return new AnswerQuestionResponse("loser");
+            userService.appendScore(pin, Results.LOSER.getScore());
+            return new AnswerQuestionResponse(Results.LOSER);
         }
     }
 

@@ -1,4 +1,6 @@
 package com.github.renas.PubQuiz.quiz.payloads;
 
-public record AnswerQuestionResponse(String result){
+import com.github.renas.PubQuiz.quiz.Results;
+
+public record AnswerQuestionResponse(Results result){
 }

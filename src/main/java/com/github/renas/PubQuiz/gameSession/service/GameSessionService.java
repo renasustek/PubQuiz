@@ -1,5 +1,8 @@
 package com.github.renas.PubQuiz.gameSession.service;
 
+import com.github.renas.PubQuiz.gameSession.GameState;
+import com.github.renas.PubQuiz.gameSession.GameStatus;
+import com.github.renas.PubQuiz.gameSession.User;
 import com.github.renas.PubQuiz.gameSession.payloads.requests.JoinGameRequest;
 import com.github.renas.PubQuiz.gameSession.payloads.responses.JoinGameResponse;
 import com.github.renas.PubQuiz.gameSession.persistence.GameSessionRedisRepo;
@@ -30,14 +33,15 @@ public class GameSessionService {
 
     public String createGameLobby(String hostName){
         String pin = generatePin();
-        gameSessionRedisRepo.createGameLobby(pin);
+        GameState gameState = new GameState(GameStatus.WAITING, 0);
+        gameSessionRedisRepo.createGameLobby(pin, gameState);
         quizService.loadQuiz(pin);
         joinGame(new JoinGameRequest(pin, hostName));
         return pin;
     }
 
     public JoinGameResponse joinGame(JoinGameRequest req){
-        if (gameSessionRedisRepo.joinGame(req.pin(), req.name()) == 1){
+        if (gameSessionRedisRepo.joinGame(req.pin(), new User(req.name(), 0)) == 1){
             return new JoinGameResponse(req.pin(), req.name());
         }else {
             return null;
@@ -45,6 +49,7 @@ public class GameSessionService {
     }
 
     public void startGame(String pin){
-        gameSessionRedisRepo.startGame(pin);
+        GameState updatedState = new GameState(GameStatus.INPROGRESS, 0);
+        gameSessionRedisRepo.startGame(pin, updatedState);
     }
 }
