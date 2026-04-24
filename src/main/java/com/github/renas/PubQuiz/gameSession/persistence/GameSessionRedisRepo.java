@@ -5,6 +5,7 @@ import com.github.renas.PubQuiz.gameSession.GameStatus;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Repository
@@ -17,7 +18,7 @@ public class GameSessionRedisRepo {
     }
 
     public boolean pinExists(String pin){
-        return redisTemplate.opsForValue().get(pin) != null;
+        return redisTemplate.opsForValue().get("game:"+pin) != null;
 
     }
 

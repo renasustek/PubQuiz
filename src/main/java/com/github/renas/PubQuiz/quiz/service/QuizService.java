@@ -1,5 +1,6 @@
 package com.github.renas.PubQuiz.quiz.service;
 
+import com.github.renas.PubQuiz.gameSession.persistence.GameSessionRedisRepo;
 import com.github.renas.PubQuiz.quiz.Question;
 import com.github.renas.PubQuiz.quiz.persistence.QuizRedisRepo;
 import com.github.renas.PubQuiz.quiz.persistence.QuizRepo;
@@ -12,10 +13,12 @@ import java.util.List;
 public class QuizService {
     private final QuizRedisRepo quizRedisRepo;
     private final QuizRepo quizRepo;
+    private final GameSessionRedisRepo gameSessionRedisRepo;
 
-    public QuizService(QuizRedisRepo quizRedisRepo, QuizRepo quizRepo) {
+    public QuizService(QuizRedisRepo quizRedisRepo, QuizRepo quizRepo, GameSessionRedisRepo gameSessionRedisRepo) {
         this.quizRedisRepo = quizRedisRepo;
         this.quizRepo = quizRepo;
+        this.gameSessionRedisRepo = gameSessionRedisRepo;
     }
 
     public void loadQuiz(String gamePin){
@@ -32,5 +35,8 @@ public class QuizService {
         //loads all questions in repo into redis
     }
 
+    public Question getQuestion(String pin){
+        return quizRedisRepo.getQuestion(pin);
+    }
 
 }

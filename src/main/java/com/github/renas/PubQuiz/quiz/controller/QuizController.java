@@ -16,7 +16,7 @@ public class QuizController {
 
     @GetMapping("/get-question")
     public Question getQuestion(@RequestBody String pin){
-
+        return quizService.getQuestion(pin);
     }
 
 }
