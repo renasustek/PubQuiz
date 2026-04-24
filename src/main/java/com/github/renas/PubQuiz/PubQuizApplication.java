@@ -10,5 +10,4 @@ public class PubQuizApplication {
 		SpringApplication.run(PubQuizApplication.class, args);
 	}
 
-
 }
