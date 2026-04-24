@@ -21,9 +21,9 @@ public class GameSessionRedisRepo {
 
     }
 
-    public void createGame(String pin, String hostName) {
+    public void createGameLobby(String pin, String hostName) {
         GameState newState = new GameState(GameStatus.WAITING, 0);
-        redisTemplate.opsForValue().set(pin, newState);
+        redisTemplate.opsForValue().set("game:"+pin, newState);
         redisTemplate.expire(pin, 2, TimeUnit.HOURS);
     }
 

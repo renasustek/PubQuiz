@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuizController {
     private final QuizService quizService;
 
-
     public QuizController(QuizService quizService) {
         this.quizService = quizService;
     }

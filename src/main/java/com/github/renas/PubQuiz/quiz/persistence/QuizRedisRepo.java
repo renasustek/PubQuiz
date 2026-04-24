@@ -1,7 +1,10 @@
 package com.github.renas.PubQuiz.quiz.persistence;
 
+import com.github.renas.PubQuiz.quiz.Question;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class QuizRedisRepo {
@@ -11,5 +14,9 @@ public class QuizRedisRepo {
 
     public QuizRedisRepo(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
+    }
+
+    public void loadQuestions(String gamePin, List<Question> questions){
+        redisTemplate.opsForValue().set("game:"+gamePin+"questions", questions);
     }
 }
