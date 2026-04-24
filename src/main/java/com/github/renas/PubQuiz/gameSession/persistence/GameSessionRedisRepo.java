@@ -21,10 +21,14 @@ public class GameSessionRedisRepo {
 
     }
 
-    public void createGameLobby(String pin, String hostName) {
+    public void createGameLobby(String pin) {
         GameState newState = new GameState(GameStatus.WAITING, 0);
         redisTemplate.opsForValue().set("game:"+pin, newState);
         redisTemplate.expire(pin, 2, TimeUnit.HOURS);
+    }
+
+    public Long joinGame(String pin, String name){
+        return redisTemplate.opsForSet().add("game:"+pin+":users", name);
     }
 
 }

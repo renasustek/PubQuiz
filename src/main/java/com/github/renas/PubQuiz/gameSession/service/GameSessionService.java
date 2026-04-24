@@ -1,7 +1,10 @@
 package com.github.renas.PubQuiz.gameSession.service;
 
+import com.github.renas.PubQuiz.gameSession.payloads.requests.JoinGameRequest;
+import com.github.renas.PubQuiz.gameSession.payloads.responses.JoinGameResponse;
 import com.github.renas.PubQuiz.gameSession.persistence.GameSessionRedisRepo;
 import com.github.renas.PubQuiz.quiz.service.QuizService;
+import org.hibernate.mapping.Join;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -27,8 +30,17 @@ public class GameSessionService {
 
     public String createGameLobby(String hostName){
         String pin = generatePin();
-        gameSessionRedisRepo.createGameLobby(pin, hostName);
+        gameSessionRedisRepo.createGameLobby(pin);
         quizService.loadQuiz(pin);
+        joinGame(new JoinGameRequest(pin, hostName));
         return pin;
+    }
+
+    public JoinGameResponse joinGame(JoinGameRequest req){
+        if (gameSessionRedisRepo.joinGame(req.pin(), req.name()) == 1){
+            return new JoinGameResponse(req.pin(), req.name());
+        }else {
+            return null;
+        }
     }
 }

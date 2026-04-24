@@ -1,5 +1,7 @@
 package com.github.renas.PubQuiz.gameSession.controller;
 
+import com.github.renas.PubQuiz.gameSession.payloads.requests.JoinGameRequest;
+import com.github.renas.PubQuiz.gameSession.payloads.responses.JoinGameResponse;
 import com.github.renas.PubQuiz.gameSession.service.GameSessionService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,5 +19,10 @@ public class GameSessionController {
     @PostMapping("/create-game")
     public String createGameLobby(@RequestBody String name){
         return gameSessionService.createGameLobby(name);
+    }
+
+    @PostMapping("/join-game")
+    public JoinGameResponse joinLobby(@RequestBody JoinGameRequest req){
+        return gameSessionService.joinGame(req);
     }
 }
