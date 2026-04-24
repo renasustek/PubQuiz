@@ -1,5 +1,6 @@
 package com.github.renas.PubQuiz.quiz.persistence;
 
+import com.github.renas.PubQuiz.gameSession.GameState;
 import com.github.renas.PubQuiz.quiz.Question;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,7 +13,6 @@ public class QuizRedisRepo {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-
     public QuizRedisRepo(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
@@ -21,8 +21,10 @@ public class QuizRedisRepo {
         questions.forEach(question -> redisTemplate.opsForList().rightPush("game:" + gamePin + ":questions", question));
     }
 
-    public Question getQuestion(String pin) {
-        Object data = redisTemplate.opsForList().getFirst("game:" + pin + ":questions");
+    public Question getQuestion(String pin, int index) {
+        Object data = redisTemplate.opsForList().index("game:" + pin + ":questions", index);
         return new ObjectMapper().convertValue(data, Question.class);
     }
+
+
 }

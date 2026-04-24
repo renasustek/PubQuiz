@@ -4,9 +4,7 @@ import com.github.renas.PubQuiz.gameSession.GameState;
 import com.github.renas.PubQuiz.gameSession.GameStatus;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import tools.jackson.databind.ObjectMapper;
 
 @Repository
 public class GameSessionRedisRepo {
@@ -17,24 +15,36 @@ public class GameSessionRedisRepo {
         this.redisTemplate = redisTemplate;
     }
 
-    public boolean pinExists(String pin){
-        return redisTemplate.opsForValue().get("game:"+pin) != null;
+    public boolean pinExists(String pin) {
+        return redisTemplate.opsForValue().get("game:" + pin) != null;
 
     }
 
     public void createGameLobby(String pin) {
         GameState newState = new GameState(GameStatus.WAITING, 0);
-        redisTemplate.opsForValue().set("game:"+pin, newState);
-//        redisTemplate.expire(pin, 2, TimeUnit.HOURS);
+        redisTemplate.opsForValue().set("game:" + pin, newState);
     }
 
-    public Long joinGame(String pin, String name){
-        return redisTemplate.opsForSet().add("game:"+pin+":users", name);
+    public Long joinGame(String pin, String name) {
+        return redisTemplate.opsForSet().add("game:" + pin + ":users", name);
     }
 
-    public void startGame(String pin){
+    public void startGame(String pin) {
         GameState updatedState = new GameState(GameStatus.INPROGRESS, 0);
-        redisTemplate.opsForValue().set("game:"+pin, updatedState);
+        redisTemplate.opsForValue().set("game:" + pin, updatedState);
     }
 
+    public GameState getGameState(String pin){
+        return new ObjectMapper().convertValue(redisTemplate.opsForValue().get("game:" + pin), GameState.class);
+    }
+
+    public int incrementQuestionIndex(String pin) {
+        GameState oldState = new ObjectMapper().convertValue(redisTemplate.opsForValue().get("game:" + pin), GameState.class);
+        GameState newState = new GameState(oldState.status(), oldState.currentQuestionIndex() + 1);
+        redisTemplate.opsForValue().set("game:" + pin, newState);
+        GameState updatedState = new ObjectMapper().convertValue(redisTemplate.opsForValue().get("game:" + pin), GameState.class);
+        return updatedState.currentQuestionIndex();
+    }
 }
+
+

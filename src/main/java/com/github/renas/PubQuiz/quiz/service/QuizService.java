@@ -25,7 +25,7 @@ public class QuizService {
         this.gameSessionRedisRepo = gameSessionRedisRepo;
     }
 
-    public void loadQuiz(String gamePin){
+    public void loadQuiz(String gamePin) {
         List<Question> questionList = new ArrayList<>();
         quizRepo.findAll().forEach(questionDao -> {
             questionList.add(new Question(
@@ -39,21 +39,31 @@ public class QuizService {
         //loads all questions from database into cache
     }
 
-    public QuestionResponse getQuestion(String pin){
-        Question question = quizRedisRepo.getQuestion(pin);
+    public QuestionResponse getQuestion(String pin) {
+        Question question = quizRedisRepo.getQuestion(pin, gameSessionRedisRepo.getGameState(pin).currentQuestionIndex());
         List<String> answers = new ArrayList<>();
         answers.add(question.correctAnswer());
         answers.addAll(question.incorrectAnswers());
-        return new QuestionResponse(question.question(), answers);
+        return new QuestionResponse(question.question(), answers, checkIfLastQuestion(pin));
     }
 
-    public AnswerQuestionResponse answerQuestion(AnswerQuestionRequest req){
-        String correctAnswer = quizRedisRepo.getQuestion(req.pin()).correctAnswer();
-        if (Objects.equals(req.answer(), correctAnswer)){
+    public AnswerQuestionResponse answerQuestion(AnswerQuestionRequest req) {
+        String pin = req.pin();
+        String correctAnswer = quizRedisRepo.getQuestion(pin, gameSessionRedisRepo.getGameState(pin).currentQuestionIndex()).correctAnswer();
+        if (Objects.equals(req.answer(), correctAnswer)) {
             return new AnswerQuestionResponse("winner");
-        }else {
+        } else {
             return new AnswerQuestionResponse("loser");
         }
+    }
+
+    public int incrementQuestionIndex(String pin) {
+        return gameSessionRedisRepo.incrementQuestionIndex(pin);
+    }
+
+    private boolean checkIfLastQuestion(String pin) {
+        return quizRedisRepo.getQuestion(pin, gameSessionRedisRepo.getGameState(pin).currentQuestionIndex()+1) == null;
+
     }
 
 }
