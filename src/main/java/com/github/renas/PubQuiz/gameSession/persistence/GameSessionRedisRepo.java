@@ -23,7 +23,7 @@ public class GameSessionRedisRepo {
     }
 
     public void createGameLobby(String pin) {
-        GameState newState = new GameState(GameStatus.WAITING);
+        GameState newState = new GameState(GameStatus.WAITING, 0);
         redisTemplate.opsForValue().set("game:"+pin, newState);
 //        redisTemplate.expire(pin, 2, TimeUnit.HOURS);
     }
@@ -33,7 +33,7 @@ public class GameSessionRedisRepo {
     }
 
     public void startGame(String pin){
-        GameState updatedState = new GameState(GameStatus.INPROGRESS);
+        GameState updatedState = new GameState(GameStatus.INPROGRESS, 0);
         redisTemplate.opsForValue().set("game:"+pin, updatedState);
     }
 

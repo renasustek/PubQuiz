@@ -2,12 +2,16 @@ package com.github.renas.PubQuiz.quiz.service;
 
 import com.github.renas.PubQuiz.gameSession.persistence.GameSessionRedisRepo;
 import com.github.renas.PubQuiz.quiz.Question;
+import com.github.renas.PubQuiz.quiz.payloads.AnswerQuestionRequest;
+import com.github.renas.PubQuiz.quiz.payloads.AnswerQuestionResponse;
+import com.github.renas.PubQuiz.quiz.payloads.QuestionResponse;
 import com.github.renas.PubQuiz.quiz.persistence.QuizRedisRepo;
 import com.github.renas.PubQuiz.quiz.persistence.QuizRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class QuizService {
@@ -32,11 +36,24 @@ public class QuizService {
         });
 
         quizRedisRepo.loadQuestions(gamePin, questionList);
-        //loads all questions in repo into redis
+        //loads all questions from database into cache
     }
 
-    public Question getQuestion(String pin){
-        return quizRedisRepo.getQuestion(pin);
+    public QuestionResponse getQuestion(String pin){
+        Question question = quizRedisRepo.getQuestion(pin);
+        List<String> answers = new ArrayList<>();
+        answers.add(question.correctAnswer());
+        answers.addAll(question.incorrectAnswers());
+        return new QuestionResponse(question.question(), answers);
+    }
+
+    public AnswerQuestionResponse answerQuestion(AnswerQuestionRequest req){
+        String correctAnswer = quizRedisRepo.getQuestion(req.pin()).correctAnswer();
+        if (Objects.equals(req.answer(), correctAnswer)){
+            return new AnswerQuestionResponse("winner");
+        }else {
+            return new AnswerQuestionResponse("loser");
+        }
     }
 
 }

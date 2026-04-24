@@ -18,13 +18,11 @@ public class QuizRedisRepo {
     }
 
     public void loadQuestions(String gamePin, List<Question> questions) {
-        questions.forEach(question -> {
-            redisTemplate.opsForList().rightPush("game:" + gamePin + ":questions", question);
-        });
+        questions.forEach(question -> redisTemplate.opsForList().rightPush("game:" + gamePin + ":questions", question));
     }
 
     public Question getQuestion(String pin) {
-        Object data = redisTemplate.opsForList().leftPop("game:" + pin + ":questions");
+        Object data = redisTemplate.opsForList().getFirst("game:" + pin + ":questions");
         return new ObjectMapper().convertValue(data, Question.class);
     }
 }

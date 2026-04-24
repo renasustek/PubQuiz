@@ -1,6 +1,8 @@
 package com.github.renas.PubQuiz.quiz.controller;
 
 import com.github.renas.PubQuiz.quiz.Question;
+import com.github.renas.PubQuiz.quiz.payloads.AnswerQuestionRequest;
+import com.github.renas.PubQuiz.quiz.payloads.AnswerQuestionResponse;
 import com.github.renas.PubQuiz.quiz.service.QuizService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +17,13 @@ public class QuizController {
     }
 
     @GetMapping("/get-question")
-    public Question getQuestion(@RequestBody String pin){
+    public QuestionResponse getQuestion(@RequestBody String pin){
         return quizService.getQuestion(pin);
+    }
+
+    @PostMapping("/answer-question")
+    public AnswerQuestionResponse answerQuestion(@RequestBody AnswerQuestionRequest req){
+        return quizService.answerQuestion(req);
     }
 
 }
