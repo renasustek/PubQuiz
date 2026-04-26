@@ -54,10 +54,9 @@ public class QuizService {
         String pin = req.pin();
         String correctAnswer = quizRedisRepo.getQuestion(pin, gameSessionRedisRepo.getGameState(pin).currentQuestionIndex()).correctAnswer();
         if (Objects.equals(req.answer(), correctAnswer)) {
-            userService.appendScore(req, Results.WINNER.getScore());
+            userService.appendScore(req.pin(),req.username(), Results.WINNER.getScore());
             return new AnswerQuestionResponse(Results.WINNER);
         } else {
-            userService.appendScore(pin, Results.LOSER.getScore());
             return new AnswerQuestionResponse(Results.LOSER);
         }
     }

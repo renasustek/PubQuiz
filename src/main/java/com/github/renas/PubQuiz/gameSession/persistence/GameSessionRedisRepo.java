@@ -1,8 +1,6 @@
 package com.github.renas.PubQuiz.gameSession.persistence;
 
 import com.github.renas.PubQuiz.gameSession.GameState;
-import com.github.renas.PubQuiz.gameSession.GameStatus;
-import com.github.renas.PubQuiz.gameSession.User;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 import tools.jackson.databind.ObjectMapper;
@@ -25,8 +23,9 @@ public class GameSessionRedisRepo {
         redisTemplate.opsForValue().set("game:" + pin, gameState);
     }
 
-    public Long joinGame(String pin, User user) {
-        return redisTemplate.opsForSet().add("game:" + pin + ":users", user);
+    public Long joinGame(String pin, String name) {
+        redisTemplate.opsForValue().set("users:" + name + ":"+pin, 0);
+        return redisTemplate.opsForSet().add("game:" + pin + ":users", name);
     }
 
     public void startGame(String pin, GameState gameState) {

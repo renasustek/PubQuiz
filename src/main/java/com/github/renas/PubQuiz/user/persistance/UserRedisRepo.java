@@ -12,7 +12,7 @@ public class UserRedisRepo {
     }
 
     public void appendScore(String pin, String username, int score) {
-        Object data = redisTemplate.opsForValue().get("game:"+pin+":users");
-
+        Integer currScore =  (Integer) redisTemplate.opsForValue().get("users:"+username +":"+pin);
+        redisTemplate.opsForValue().set("users:"+username+":"+pin, currScore+score);
     }
 }

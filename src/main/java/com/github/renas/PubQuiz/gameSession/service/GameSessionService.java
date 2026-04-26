@@ -2,12 +2,11 @@ package com.github.renas.PubQuiz.gameSession.service;
 
 import com.github.renas.PubQuiz.gameSession.GameState;
 import com.github.renas.PubQuiz.gameSession.GameStatus;
-import com.github.renas.PubQuiz.gameSession.User;
+import com.github.renas.PubQuiz.user.UserData;
 import com.github.renas.PubQuiz.gameSession.payloads.requests.JoinGameRequest;
 import com.github.renas.PubQuiz.gameSession.payloads.responses.JoinGameResponse;
 import com.github.renas.PubQuiz.gameSession.persistence.GameSessionRedisRepo;
 import com.github.renas.PubQuiz.quiz.service.QuizService;
-import org.hibernate.mapping.Join;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -41,7 +40,7 @@ public class GameSessionService {
     }
 
     public JoinGameResponse joinGame(JoinGameRequest req){
-        if (gameSessionRedisRepo.joinGame(req.pin(), new User(req.name(), 0)) == 1){
+        if (gameSessionRedisRepo.joinGame(req.pin(), req.name()) == 1){
             return new JoinGameResponse(req.pin(), req.name());
         }else {
             return null;
