@@ -21,7 +21,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	implementation("org.springframework:spring-websocket:7.0.7")
+	implementation("org.springframework.boot:spring-boot-starter-websocket")
 	implementation("com.mysql:mysql-connector-j")
 	implementation("io.lettuce:lettuce-core")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")

@@ -1,5 +1,6 @@
 package com.github.renas.PubQuiz.gameSession.controller;
 
+import com.github.renas.PubQuiz.gameSession.payloads.requests.EndQuizRequest;
 import com.github.renas.PubQuiz.gameSession.payloads.requests.JoinGameRequest;
 import com.github.renas.PubQuiz.gameSession.payloads.responses.JoinGameResponse;
 import com.github.renas.PubQuiz.gameSession.service.GameSessionService;
@@ -32,4 +33,8 @@ public class GameSessionController {
         gameSessionService.startGame(pin);
     }
 
+    @GetMapping("/end-quiz")
+    public void endGame(@RequestBody EndQuizRequest req){
+        gameSessionService.endGame(req);
+    }
 }

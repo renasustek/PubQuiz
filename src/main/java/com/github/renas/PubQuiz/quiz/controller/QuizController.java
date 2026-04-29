@@ -31,4 +31,5 @@ public class QuizController {
     public int incrementQuestion(@RequestBody String pin){
         return quizService.incrementQuestionIndex(pin);
     }
+
 }

@@ -47,7 +47,7 @@ public class QuizService {
         List<String> answers = new ArrayList<>();
         answers.add(question.correctAnswer());
         answers.addAll(question.incorrectAnswers());
-        return new QuestionResponse(question.question(), answers, checkIfLastQuestion(pin));
+        return new QuestionResponse(question.question(), answers);
     }
 
     public AnswerQuestionResponse answerQuestion(AnswerQuestionRequest req) {
@@ -65,7 +65,7 @@ public class QuizService {
         return gameSessionRedisRepo.incrementQuestionIndex(pin);
     }
 
-    private boolean checkIfLastQuestion(String pin) {
+    private boolean checkIfNextQuestionLast(String pin) {
         return quizRedisRepo.getQuestion(pin, gameSessionRedisRepo.getGameState(pin).currentQuestionIndex()+1) == null;
 
     }

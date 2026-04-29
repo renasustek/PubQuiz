@@ -2,6 +2,7 @@ package com.github.renas.PubQuiz.gameSession.service;
 
 import com.github.renas.PubQuiz.gameSession.GameState;
 import com.github.renas.PubQuiz.gameSession.GameStatus;
+import com.github.renas.PubQuiz.gameSession.payloads.requests.EndQuizRequest;
 import com.github.renas.PubQuiz.user.UserData;
 import com.github.renas.PubQuiz.gameSession.payloads.requests.JoinGameRequest;
 import com.github.renas.PubQuiz.gameSession.payloads.responses.JoinGameResponse;
@@ -50,5 +51,9 @@ public class GameSessionService {
     public void startGame(String pin){
         GameState updatedState = new GameState(GameStatus.INPROGRESS, 0);
         gameSessionRedisRepo.startGame(pin, updatedState);
+    }
+
+    public void endGame(EndQuizRequest req){
+        gameSessionRedisRepo.endGame(req.pin());
     }
 }
